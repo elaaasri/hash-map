@@ -72,21 +72,65 @@ class HashMap {
             this.buckets[index].splice(i, 1); // bucket size > 1.
           }
           this.size--;
-          return;
+          return `entry of key "${key}" removed!`;
         }
       }
     }
     return false;
   }
+  // returns total number of buckets :
+  length() {
+    return `length: ${this.size}`;
+  }
+  // removes all entries :
+  clear() {
+    this.buckets.length = 0;
+    this.buckets.length = 16;
+    this.size = 0;
+  }
+  // returns an array containing all keys :
+  keys(targetIndex = 0) {
+    let allBuckets = this.buckets.filter((bucket) => bucket != null);
+    let allKeys = [];
+    for (let i = 0; i < allBuckets.length; i++) {
+      if (allBuckets[i].length <= 1) {
+        allKeys.push(allBuckets[i][0][targetIndex]);
+      } else {
+        allBuckets[i].map((bucket) => allKeys.push(bucket[targetIndex]));
+      }
+    }
+    return allKeys;
+  }
+  // returns an array containing all values :
+  values() {
+    return this.keys(1);
+  }
+  // returns an array containing each key/value pair:
+  entries() {
+    let allEntries = [];
+    let keys = this.keys();
+    let values = this.values();
+    for (let i = 0; i < this.size; i++) {
+      allEntries.push([keys[i], values[i]]);
+    }
+    return allEntries;
+  }
 }
-
+// creates an instance :
 const hm = new HashMap();
+// sets some pairs :
 hm.set("tab", "old");
-hm.set("tab", "new");
-hm.set("bat", "odd");
+hm.set("tab", "new"); // overwrites the value with the pair that has same key!
+hm.set("bat", "odd"); // collision!, adds the pair to the same array like linked list!
 hm.set("kiwi", "fruit");
 hm.set("carrot", "veg");
+// hash map methods :
 console.log(hm.get("kiwi"));
 console.log(hm.has("kiwi"));
 console.log(hm.remove("kiwi"));
+console.log(hm.length());
+// console.log(hm.clear());
+console.log(hm.keys());
+console.log(hm.values());
+console.log(hm.entries());
 console.log(hm);

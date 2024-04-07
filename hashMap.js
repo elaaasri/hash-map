@@ -49,29 +49,44 @@ class HashMap {
     if (this.buckets[index]) {
       for (let i = 0; i < this.buckets[index].length; i++) {
         if (this.buckets[index][i][0] === key) {
-          return this.buckets[index][i][1];
+          return `${key} value is ${this.buckets[index][i][1]}`;
         }
       }
     }
     return null;
   }
+  // checks if the buckets has the key :
+  has(key) {
+    if (this.get(key) != null) return true;
+    return false;
+  }
+  // removes the entry of the given key :
+  remove(key) {
+    const index = this.hash(key);
+    if (this.buckets[index]) {
+      for (let i = 0; i < this.buckets[index].length; i++) {
+        if (this.buckets[index][i][0] === key) {
+          if (this.buckets[index].length <= 1) {
+            this.buckets.splice(index, 1); // bucket size = 1.
+          } else {
+            this.buckets[index].splice(i, 1); // bucket size > 1.
+          }
+          this.size--;
+          return;
+        }
+      }
+    }
+    return false;
+  }
 }
 
 const hm = new HashMap();
-console.log(hm);
-console.log(hm.set("tab", "old"));
-console.log(hm.set("tab", "new"));
-console.log(hm.set("bat", "odd"));
-console.log(hm.set("a", "odd"));
-// console.log(hm.set("b", "odd"));
-// console.log(hm.set("b", "odd"));
-// console.log(hm.set("d", "odd"));
-// console.log(hm.set("e", "odd"));
-// console.log(hm.set("f", "odd"));
-// console.log(hm.set("g", "odd"));
-// console.log(hm.set("h", "odd"));
-// console.log(hm.set("i", "odd"));
-// console.log(hm.set("j", "odd"));
-// console.log(hm.set("k", "odd"));
-console.log(hm.get("bat"));
+hm.set("tab", "old");
+hm.set("tab", "new");
+hm.set("bat", "odd");
+hm.set("kiwi", "fruit");
+hm.set("carrot", "veg");
+console.log(hm.get("kiwi"));
+console.log(hm.has("kiwi"));
+console.log(hm.remove("kiwi"));
 console.log(hm);

@@ -14,7 +14,6 @@ class HashMap {
     // if (hashCode < 0 || hashCode >= this.buckets.length) {
     //   throw Error("Trying to access index out of bound");
     // }
-    console.log(hashCode);
     return hashCode;
   }
   // sets key/value pairs :
@@ -44,6 +43,18 @@ class HashMap {
       this.buckets.length *= 2;
     }
   }
+  // returns the value of it's key :
+  get(key) {
+    const index = this.hash(key);
+    if (this.buckets[index]) {
+      for (let i = 0; i < this.buckets[index].length; i++) {
+        if (this.buckets[index][i][0] === key) {
+          return this.buckets[index][i][1];
+        }
+      }
+    }
+    return null;
+  }
 }
 
 const hm = new HashMap();
@@ -62,4 +73,5 @@ console.log(hm.set("a", "odd"));
 // console.log(hm.set("i", "odd"));
 // console.log(hm.set("j", "odd"));
 // console.log(hm.set("k", "odd"));
+console.log(hm.get("bat"));
 console.log(hm);

@@ -3,6 +3,17 @@ class HashMap {
     this.buckets = [];
     this.buckets.length = 16;
     this.size = 0;
+    // sets trap for buckets array using proxy obj:
+    this.buckets = new Proxy(this.buckets, {
+      set: function (target, index, value) {
+        // throws error when tryin to access out of bound index:
+        if (index < 0 || index >= target.length) {
+          throw Error("Trying to access index out of bound");
+        }
+        target[index] = value;
+        return true;
+      },
+    });
   }
   // generates hash code :
   hash(key) {
@@ -59,17 +70,23 @@ class HashMap {
   // removes the entry of the given key :
   remove(key) {
     let index = this.hash(key);
-    if (this.buckets[index][0][0] === key && this.buckets[index].length === 1) {
-      this.buckets[index] = undefined;
-      this.size--;
-    } else {
-      this.buckets[index].map((bucket, i) => {
-        if (bucket[0] === key) {
-          this.buckets[index].splice(i, 1);
-          this.size--;
-        }
-      });
-    }
+    if (this.buckets[index]) {
+      if (
+        this.buckets[index][0][0] === key &&
+        this.buckets[index].length === 1
+      ) {
+        this.buckets[index] = undefined;
+        this.size--;
+      } else {
+        this.buckets[index].map((bucket, i) => {
+          if (bucket[0] === key) {
+            this.buckets[index].splice(i, 1);
+            this.size--;
+          }
+        });
+      }
+      return `${key} entry removed!`;
+    } else return false;
   }
   // returns total number of buckets :
   length() {
@@ -120,6 +137,8 @@ hm.set("tab", "new"); // overwrites the value with the pair that has same key!
 hm.set("bat", "odd"); // collision!, adds the pair to the same array like linked list!
 hm.set("kiwi", "fruit");
 hm.set("carrot", "veg");
+// hm.buckets[100] = [["key", "value"]]; // throws error --> accessing out of bound index!
+console.log(hm.buckets);
 // hash map methods :
 console.log(hm.get("kiwi"));
 console.log(hm.has("kiwi"));
@@ -129,15 +148,4 @@ console.log(hm.length());
 console.log(hm.keys());
 console.log(hm.values());
 console.log(hm.entries());
-console.log(hm);
-
-//  this.buckets = new Proxy(this.buckets, {
-//     set: function (target, index, value) {
-//       // throws error when tryin to access out of bound index:
-//       if (index < 0 || index >= target.length) {
-//         throw Error("Trying to access index out of bound");
-//       }
-//       target[index] = value;
-//       return true;
-//     },
-//   });
+console.log("bucket length:", hm.buckets.length, hm.buckets);

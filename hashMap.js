@@ -83,15 +83,18 @@ class HashMap {
   }
   // returns an array containing all keys :
   keys(targetIndex = 0) {
-    let allBuckets = this.buckets.filter((bucket) => bucket != null);
     let allKeys = [];
-    for (let i = 0; i < allBuckets.length; i++) {
-      if (allBuckets[i].length <= 1) {
-        allKeys.push(allBuckets[i][0][targetIndex]);
-      } else {
-        allBuckets[i].map((bucket) => allKeys.push(bucket[targetIndex]));
-      }
-    }
+    this.buckets
+      .filter((bucket) => bucket != null)
+      .map((bucket) => {
+        if (bucket.length === 1) {
+          allKeys.push(bucket[0][targetIndex]);
+        } else {
+          for (let nestedBuket of bucket) {
+            allKeys.push(nestedBuket[targetIndex]);
+          }
+        }
+      });
     return allKeys;
   }
   // returns an array containing all values :

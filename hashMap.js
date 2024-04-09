@@ -10,10 +10,6 @@ class HashMap {
     for (let i = 0; i < key.length; i++) {
       hashCode = (31 * hashCode + key.charCodeAt(i)) % this.buckets.length;
     }
-    // throws error when tryin to access out of bound index:
-    // if (hashCode < 0 || hashCode >= this.buckets.length) {
-    //   throw Error("Trying to access index out of bound");
-    // }
     return hashCode;
   }
   // sets key/value pairs :
@@ -62,21 +58,18 @@ class HashMap {
   }
   // removes the entry of the given key :
   remove(key) {
-    const index = this.hash(key);
-    if (this.buckets[index]) {
-      for (let i = 0; i < this.buckets[index].length; i++) {
-        if (this.buckets[index][i][0] === key) {
-          if (this.buckets[index].length <= 1) {
-            this.buckets.splice(index, 1); // bucket size = 1.
-          } else {
-            this.buckets[index].splice(i, 1); // bucket size > 1.
-          }
+    let index = this.hash(key);
+    if (this.buckets[index][0][0] === key && this.buckets[index].length === 1) {
+      this.buckets[index] = undefined;
+      this.size--;
+    } else {
+      this.buckets[index].map((bucket, i) => {
+        if (bucket[0] === key) {
+          this.buckets[index].splice(i, 1);
           this.size--;
-          return `entry of key "${key}" removed!`;
         }
-      }
+      });
     }
-    return false;
   }
   // returns total number of buckets :
   length() {
@@ -134,3 +127,14 @@ console.log(hm.keys());
 console.log(hm.values());
 console.log(hm.entries());
 console.log(hm);
+
+//  this.buckets = new Proxy(this.buckets, {
+//     set: function (target, index, value) {
+//       // throws error when tryin to access out of bound index:
+//       if (index < 0 || index >= target.length) {
+//         throw Error("Trying to access index out of bound");
+//       }
+//       target[index] = value;
+//       return true;
+//     },
+//   });

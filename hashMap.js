@@ -148,4 +148,45 @@ console.log(hm.length());
 console.log(hm.keys());
 console.log(hm.values());
 console.log(hm.entries());
-console.log("bucket length:", hm.buckets.length, hm.buckets);
+console.log("HashMap bucket length:", hm.buckets.length, hm.buckets);
+
+// ############################################################
+// hash set class that contains keys only :
+console.log("###".repeat(20));
+class HashSet extends HashMap {
+  constructor() {
+    super();
+  }
+  // set keys only :
+  setKeysOnly() {
+    this.buckets.filter((bucket) => {
+      if (bucket.length === 1) {
+        bucket[0].length = 1;
+      } else {
+        bucket.filter((nestedBucket) => (nestedBucket.length = 1));
+      }
+    });
+  }
+}
+// creates an instance :
+const hs = new HashSet();
+// sets some keys :
+hs.set("setKey");
+hs.set("tab", "old");
+hs.set("tab", "new"); // overwrites the value with the pair that has same key!
+hs.set("bat", "odd"); // collision!, adds the pair to the same array like linked list!
+hs.set("kiwi", "fruit");
+hs.set("carrot", "veg");
+// hs.buckets[15] = [["key", "value"]]; // throws error --> accessing out of bound index!
+hs.setKeysOnly();
+console.log(hs.buckets);
+// hash map methods :
+console.log(hs.get("kiwi"));
+console.log(hs.has("kiwi"));
+console.log(hs.remove("kiwi"));
+console.log(hs.length());
+// console.log(hm.clear());
+console.log(hs.keys());
+console.log(hs.values());
+console.log(hs.entries());
+console.log("HashSet bucket length:", hs.buckets.length, hs.buckets);
